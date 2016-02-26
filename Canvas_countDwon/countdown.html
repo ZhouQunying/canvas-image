@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script>
+
+			function countdown(){
+
+				var end=new Date(2014,9,29,17,00,00);
+				var now=new Date();
+
+				var m=Math.round((end-now)/1000);
+				var day=parseInt(m/24/3600);
+				var hours=parseInt((m%(3600*24))/3600);
+				var minutes=parseInt((m%3600)/60);
+				var seconds=m%60;
+
+				if(m<0){
+					document.getElementById("clock").innerHTML='0';
+					return;
+				}
+
+				document.getElementById("clock").innerHTML="离开始还剩"+day+"天"+hours+"小时"+minutes+"分钟"+seconds+"秒";
+				setTimeout('countdown()',500);
+				
+			}
+			
+			window.onload=function(){
+
+				countdown();
+
+			}
+		</script>
+	</head>
+
+	<body>
+		<span id="clock"></span>
+    </body>
+</html>

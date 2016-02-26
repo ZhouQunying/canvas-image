@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+</head>
+<body style="background-color:#000;">
+	<canvas id="canvas" style="border:1px solid gray; display:block; margin:30px auto;">
+		您当前的浏览器不支持canvas，请更换浏览器后重试
+	</canvas>
+	<canvas id="magnify" style="display:none;"></canvas>
+</body>
+<script>
+	window.onload = function() {
+		var canvas = document.getElementById('canvas');
+		var context = canvas.getContext('2d');
+		canvas.width = 1280;
+		canvas.height = 800;
+
+		var magnifyCanvas = document.getElementById('magnify');
+		var magnifyContext = magnifyCanvas.getContext('2d');
+
+		var inCanvasFlag = false;
+		var scale;
+
+		var image = new Image();
+		image.src = 'image.jpg';
+		image.onload = function() {
+
+			// 定义放大镜图像的尺寸为原图像的尺寸
+			magnifyCanvas.width = image.width;
+			magnifyCanvas.height = image.height;
+
+			// 放大镜图像的尺寸与原图像尺寸的比例，即放大倍数
+			scale = magnifyCanvas.width / canvas.width;
+
+			context.drawImage(image, 0, 0, canvas.width, canvas.height);
+			magnifyContext.drawImage(image, 0, 0);
+
+			// 鼠标事件
+			canvas.onmousedown = function(e) {
+
+				// 清除事件的默认动作
+	        	e.preventDefault();
+				var point = getWindowToCanvas(e);
+				inCanvasFlag = true;
+				drawImageAndMagnify(point);
+			}
+			canvas.onmousemove = function(e) {
+	        	e.preventDefault();
+				var point = getWindowToCanvas(e);
+				if(inCanvasFlag) {
+					drawImageAndMagnify(point);
+				}
+			}
+			canvas.onmouseup = function(e) {
+	        	e.preventDefault();
+				var point = getWindowToCanvas(e);
+				inCanvasFlag = false;
+				drawImageAndMagnify();
+			}
+			canvas.onmouseout = function(e) {
+	        	e.preventDefault();
+				var point = getWindowToCanvas(e);
+				inCanvasFlag = false;
+				drawImageAndMagnify();
+			}
+		}
+
+		// 获取当前鼠标在canvas上的坐标
+		function getWindowToCanvas(e) {
+			return {
+				// event.client* 获得当前坐标
+				// canvas.getBoundingClientRect().* 获得canvas距离浏览器视窗的距离
+				x : e.clientX - canvas.getBoundingClientRect().left,
+				y : e.clientY - canvas.getBoundingClientRect().top
+			}
+		}
+
+		// 绘制图像
+		function drawImageAndMagnify(point) {
+			context.clearRect(0, 0, canvas.width, canvas.height);
+			context.drawImage(image, 0, 0, canvas.width, canvas.height);
+			if(inCanvasFlag) {
+				drawMagnify(point);
+			}
+		}
+
+		// 绘制放大镜
+		function drawMagnify(point) {
+			var r = 100;
+			var sx = point.x * scale - r;
+			var sy = point.y * scale - r;
+			var dx = point.x - r;
+			var dy = point.y - r;
+
+			context.lineWidth = 2;
+			context.strokeStyle = 'black';
+			
+			context.save();
+			context.beginPath();
+			context.arc(point.x, point.y, r, 0*Math.PI, 2*Math.PI);
+			context.stroke();
+			context.clip();
+
+			context.drawImage(magnifyCanvas, sx, sy, 2*r, 2*r, dx, dy, 2*r, 2*r);
+			context.restore();
+		}
+	}
+</script>
+</html>

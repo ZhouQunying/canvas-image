@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+</head>
+<body style="background-color:#000;">
+	<canvas id="canvas" style="display:block; margin:30px auto; border:1px solid gray;">
+		您当前的浏览器不支持canvas，请更换浏览器后重试
+	</canvas>
+	<input id="scale" type="range" max="3.0" min="0.5" value="0.5" step="0.01" style="display:block; margin:30px auto; width:600px;"/>
+	<canvas id="watermark" style="display:none;"></canvas>
+</body>
+<script>
+
+	window.onload = function() {
+
+		var canvas = document.getElementById('canvas');
+		var context = canvas.getContext('2d');
+		canvas.width = 800;
+		canvas.height = 500;
+
+		// 拖动条
+		var slider = document.getElementById('scale');
+		// 获得拖动条的值	
+		var scale = slider.value;
+
+		// 水印
+		var watermarkCanvas = document.getElementById('watermark');
+		var watermarkContext = watermarkCanvas.getContext('2d');
+
+		var image = new Image();
+		image.src = 'image.jpg';
+		// 图片尺寸
+		var imageWidth;
+		var imageHeight;
+
+		image.onload = function() {
+		
+			imageWidth = image.width;
+			imageHeight = image.height;
+
+			watermarkCanvas.width = 240;
+			watermarkCanvas.height = 80;
+
+			// 水印内容
+			watermarkContext.font = 'bold 50px Arial';
+			watermarkContext.fillStyle = 'rgba(255, 255, 255, 0.5)';
+			watermarkContext.textBaseline = 'middle';
+			watermarkContext.fillText('by Frank', 15, 35);
+
+			// 绘制图像
+			drawImgByScale(scale);
+
+			// 拖动拖动条时的值
+			slider.onmousemove = function() {
+				scale = slider.value;
+				// 绘制图像
+				drawImgByScale(scale);
+			}
+		}
+
+		// 绘制图像和水印
+		function drawImgByScale(scale) {
+			// 缩放后的尺寸
+			var imgWidth = imageWidth * scale;
+			var imgHeight = imageHeight * scale;
+			// 缩放后的起点坐标
+			var dx = (canvas.width - imgWidth) / 2;
+			var dy = (canvas.height - imgHeight) / 2;
+
+			// 清除之前的图像后，再绘制
+			context.clearRect(0, 0, canvas.width, canvas.height);
+			context.drawImage(image, dx, dy, imgWidth, imgHeight);
+			// 绘制水印
+			context.drawImage(watermarkCanvas, canvas.width - watermarkCanvas.width, canvas.height - watermarkCanvas.height);
+		}
+
+	}
+
+</script>
+</html>

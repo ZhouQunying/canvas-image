@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>   
+<body>
+    <canvas id="convas" style="border:1px solid #aaa;display:block;margin:50px auto">
+        您的浏览器不支持convas
+    </canvas>
+
+<script>
+    window.onload=function()
+    {
+    	var convas=document.getElementById("convas");
+
+    	convas.width=1024;
+    	convas.height=768;
+
+    	var context=convas.getContext("2d");
+
+    	context.lineWidth=5;
+    	context.strokeStyle="#005588";
+
+    	//closePath()能起到封闭的作用
+    	for(var i=0;i<10;i++){
+    		context.beginPath();
+	    	context.arc(50+i*100,60,40,0,2*Math.PI*(i+1)/10);
+            context.closePath();
+
+	    	context.stroke();
+	    }	
+
+	    for(var i=0;i<10;i++){
+    		context.beginPath();
+	    	context.arc(50+i*100,180,40,0,2*Math.PI*(i+1)/10);
+
+	    	context.stroke();
+	    }	
+
+        //逆时针
+	    for(var i=0;i<10;i++){
+    		context.beginPath();
+	    	context.arc(50+i*100,300,40,0,2*Math.PI*(i+1)/10,true);
+	    	context.closePath();
+
+	    	context.stroke();
+	    }
+
+	    for(var i=0;i<10;i++){
+    		context.beginPath();
+	    	context.arc(50+i*100,420,40,0,2*Math.PI*(i+1)/10,true);
+
+	    	context.stroke();
+	    }
+
+        //当弧没有封闭时，closePath()对fill()是不起作用的，结果都是封闭
+        context.fillStyle="#005588";
+	    for(var i=0;i<10;i++){
+    		context.beginPath();
+	    	context.arc(50+i*100,540,40,0,2*Math.PI*(i+1)/10,true);
+
+	    	context.fill();
+	    }
+   
+        context.fillStyle="#005588";
+	    for(var i=0;i<10;i++){
+    		context.beginPath();
+	    	context.arc(50+i*100,680,40,0,2*Math.PI*(i+1)/10,true);
+	    	context.closePath();
+
+	    	context.fill();
+	    }
+    }
+</script>
+</body> 
+</html>
